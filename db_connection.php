@@ -1,14 +1,17 @@
 <?php
-$servername = "localhost";
-$username = "root";  // Usuario de MySQL
-$password = "0803";      // Si tienes contraseña en MySQL, agrégala aquí
-$database = "vitalife"; // Nombre de tu base de datos
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST");
+header("Content-Type: application/json; charset=UTF-8");
+
+$host = "127.0.0.1";
+$user = "root";
+$password = "080322";
+$dbname = "vitalife";
+$port = 3310;
 
 // Conectar a la base de datos
-$conn = new mysqli($servername, $username, $password, $database);
-
-// Verificar conexión
+$conn = new mysqli($host, $user, $password, $dbname, $port);
 if ($conn->connect_error) {
-    die(json_encode(["success" => false, "message" => "Error de conexión: " . $conn->connect_error]));
+    die(json_encode(["success" => false, "message" => "Error en la conexión: " . $conn->connect_error]));
 }
 ?>
