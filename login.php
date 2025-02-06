@@ -5,7 +5,6 @@ header("Content-Type: application/json; charset=UTF-8");
 
 require_once "db_connection.php";
 
-// Capturar los datos del JSON recibido
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data) {
@@ -21,18 +20,23 @@ if (!isset($data["email"], $data["password"])) {
 $email = $data["email"];
 $password = $data["password"];
 
-$sql = "SELECT id, password FROM usuarios WHERE email = ?";
+$sql = "SELECT id, nombres, apellidos, password FROM usuarios WHERE email = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->store_result();
 
 if ($stmt->num_rows > 0) {
-    $stmt->bind_result($userId, $dbPassword);
+    $stmt->bind_result($userId, $nombres, $apellidos, $dbPassword);
     $stmt->fetch();
 
     if ($password === $dbPassword) { // ⚠️ Mejora esto con hash en el futuro
-        echo json_encode(["success" => true, "message" => "Inicio de sesión exitoso", "userId" => $userId]);
+        echo json_encode([
+            "success" => true, 
+            "message" => "Inicio de sesión exitoso", 
+            "userId" => $userId,
+            "fullName" => "$nombres $apellidos" // 🔹 Retorna el nombre completo
+        ]);
     } else {
         echo json_encode(["success" => false, "message" => "Contraseña incorrecta"]);
     }
