@@ -5,7 +5,6 @@ header("Content-Type: application/json; charset=UTF-8");
 
 require_once "db_connection.php"; // Incluir conexión a la BD
 
-// Capturar datos del JSON recibido
 $data = json_decode(file_get_contents("php://input"), true);
 
 // Validar si el JSON es correcto
@@ -24,7 +23,7 @@ if (!isset($data["nombres"], $data["apellidos"], $data["email"], $data["password
 $nombres = trim($data["nombres"]);
 $apellidos = trim($data["apellidos"]);
 $email = trim($data["email"]);
-$password = trim($data["password"]);
+$password = trim($data["password"]); // ⚠️ No está encriptado
 $fecha_nacimiento = isset($data["fecha_nacimiento"]) ? trim($data["fecha_nacimiento"]) : null;
 $peso = isset($data["peso"]) ? floatval($data["peso"]) : null;
 $talla = isset($data["talla"]) ? floatval($data["talla"]) : null;
@@ -48,7 +47,7 @@ if ($checkStmt->num_rows > 0) {
 }
 $checkStmt->close();
 
-// Insertar en la base de datos
+// Insertar en la base de datos sin encriptar la contraseña
 $sql = "INSERT INTO usuarios (nombres, apellidos, email, password, fecha_nacimiento, peso, talla) VALUES (?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("sssssss", $nombres, $apellidos, $email, $password, $fecha_nacimiento, $peso, $talla);
