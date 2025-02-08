@@ -3,9 +3,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json; charset=UTF-8");
 
-require_once "db_connection.php"; // Conexión a la BD
+require_once "db_connection.php"; // Incluir conexión a la BD
 
-// Capturar datos del JSON recibido
 $data = json_decode(file_get_contents("php://input"), true);
 
 // Validar si el JSON es correcto
@@ -15,7 +14,7 @@ if (!$data) {
 }
 
 // Validar campos requeridos
-if (!isset($data["nombres"], $data["apellidos"], $data["email"], $data["password"], $data["genero"], $data["nivel_actividad"])) {
+if (!isset($data["nombres"], $data["apellidos"], $data["email"], $data["password"])) {
     echo json_encode(["success" => false, "message" => "Faltan datos en la solicitud"]);
     exit;
 }
@@ -24,12 +23,10 @@ if (!isset($data["nombres"], $data["apellidos"], $data["email"], $data["password
 $nombres = trim($data["nombres"]);
 $apellidos = trim($data["apellidos"]);
 $email = trim($data["email"]);
-$password = password_hash(trim($data["password"]), PASSWORD_BCRYPT); // 🔹 Encriptar la contraseña
+$password = trim($data["password"]); // ⚠️ No está encriptado
 $fecha_nacimiento = isset($data["fecha_nacimiento"]) ? trim($data["fecha_nacimiento"]) : null;
 $peso = isset($data["peso"]) ? floatval($data["peso"]) : null;
 $talla = isset($data["talla"]) ? floatval($data["talla"]) : null;
-$genero = trim($data["genero"]);
-$nivel_actividad = trim($data["nivel_actividad"]);
 
 // Validar email
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -50,11 +47,10 @@ if ($checkStmt->num_rows > 0) {
 }
 $checkStmt->close();
 
-// Insertar en la base de datos
-$sql = "INSERT INTO usuarios (nombres, apellidos, email, password, fecha_nacimiento, peso, talla, genero, nivel_actividad) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+// Insertar en la base de datos sin encriptar la contraseña
+$sql = "INSERT INTO usuarios (nombres, apellidos, email, password, fecha_nacimiento, peso, talla) VALUES (?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sssssdsss", $nombres, $apellidos, $email, $password, $fecha_nacimiento, $peso, $talla, $genero, $nivel_actividad);
+$stmt->bind_param("sssssss", $nombres, $apellidos, $email, $password, $fecha_nacimiento, $peso, $talla);
 
 if ($stmt->execute()) {
     echo json_encode(["success" => true, "message" => "Registro exitoso"]);
