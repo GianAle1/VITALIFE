@@ -30,12 +30,13 @@ if ($stmt->num_rows > 0) {
     $stmt->bind_result($userId, $nombres, $apellidos, $dbPassword);
     $stmt->fetch();
 
-    if ($password === $dbPassword) { // ⚠️ Mejora esto con hash en el futuro
+    if ($password === $dbPassword) { // ⚠️ Mejorar con hash en el futuro
         echo json_encode([
             "success" => true, 
             "message" => "Inicio de sesión exitoso", 
             "userId" => $userId,
-            "fullName" => "$nombres $apellidos" // 🔹 Retorna el nombre completo
+            "nombres" => $nombres,   // ✅ Se envían nombres separados
+            "apellidos" => $apellidos
         ]);
     } else {
         echo json_encode(["success" => false, "message" => "Contraseña incorrecta"]);
