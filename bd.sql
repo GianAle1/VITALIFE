@@ -12,6 +12,8 @@ CREATE TABLE usuarios (
     talla DECIMAL(5,2) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
+SELECT nombres, apellidos, email, fecha_nacimiento, peso, talla, genero, nivel_actividad, 
+        TIMESTAMPDIFF(YEAR, fecha_nacimiento, CURDATE()) AS edad 
+        FROM usuarios WHERE id = 6
 
 SELECT * FROM usuarios
