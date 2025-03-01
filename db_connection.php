@@ -3,11 +3,11 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json; charset=UTF-8");
 
-$host = "localhost";
+$host = "127.0.0.1";
 $user = "root";
-$password = "0803";
+$password = "080322";
 $dbname = "vitalife";
-$port = 3306;
+$port = 3310;
 
 // Conectar a la base de datos
 $conn = new mysqli($host, $user, $password, $dbname, $port);
